@@ -99,9 +99,6 @@ func pizzeria(pizzaMaker *Producer) {
 }
 
 func main() {
-	// seed the random number generator
-	rand.Seed(time.Now().UnixNano())
-
 	// print out a message
 	color.Cyan("The pizzeria is open for business!")
 	color.Cyan("-----------------------------------")
