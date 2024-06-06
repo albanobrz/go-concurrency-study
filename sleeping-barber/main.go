@@ -23,6 +23,9 @@
 package main
 
 import (
+	"crypto/rand"
+	"fmt"
+	"math/big"
 	"time"
 
 	"github.com/fatih/color"
@@ -55,13 +58,41 @@ func main() {
 	color.Green("The shop is open for the day!!")
 
 	// add barbers
-	shop.addBarber("Frank")
+	shop.addBarber("Barber1")
+	shop.addBarber("Barber2")
+	shop.addBarber("Barber3")
+	shop.addBarber("Barber4")
+	shop.addBarber("Barber5")
 
 	// start the barbershop as a goroutine
+	shopClosing := make(chan bool)
+	closed := make(chan bool)
+
+	go func() {
+		<-time.After(timeOpen)
+		shopClosing <- true
+		shop.closeShopForDay()
+		closed <- true
+	}()
 
 	// add clients
+	i := 1
+
+	go func() {
+		for {
+			// get a randaom number with average arrival rate
+			randomValue, _ := rand.Int(rand.Reader, big.NewInt(10))
+			randomMilliseconds := int(randomValue.Int64()) % (2 * arrivalRate)
+			select {
+			case <-shopClosing:
+				return
+			case <-time.After((time.Second / 10) * time.Duration(randomMilliseconds)):
+				shop.addClient(fmt.Sprintf("Client #%d", i))
+				i++
+			}
+		}
+	}()
 
 	// block until the barbershop is closed
-
-	time.Sleep(5 * time.Second)
+	<-closed
 }
