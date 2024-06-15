@@ -27,7 +27,7 @@ start: run
 ## stop: stops the running application
 stop:
 	@echo "Stopping..."
-	@-pkill -SIGTERM -f "./${BINARY_NAME}" || true
+	@ps aux | grep "./${BINARY_NAME}" | grep -v grep | awk '{print $$2}' | xargs kill -SIGTERM || true
 	@echo "Stopped!"
 
 ## restart: stops and starts the application
