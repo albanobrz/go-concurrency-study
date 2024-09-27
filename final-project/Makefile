@@ -25,9 +25,10 @@ clean:
 start: run
 
 ## stop: stops the running application
+## PS: this command is used atm to run on gitbash on windows
 stop:
 	@echo "Stopping..."
-	@ps aux | grep "./${BINARY_NAME}" | grep -v grep | awk '{print $$2}' | xargs kill -SIGTERM || true
+	@ps | grep "./${BINARY_NAME}" | grep -v grep | awk '{print $$1}' | xargs -r kill -SIGTERM || true
 	@echo "Stopped!"
 
 ## restart: stops and starts the application
